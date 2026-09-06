@@ -4,7 +4,7 @@
 
 ---
 
-[![pybars3](https://img.shields.io/badge/CVE--2025--25985-9.8-red)](./pybars3.md) -
+[![pybars3](https://img.shields.io/badge/Pybars3--RCE-9.8-red)](./pybars3.md) -
 **Pybars3** at least up to the current version **0.9.7** and **Pybars4** at least up to the current version **0.9.13** are vulnerable to Code Injection.
 An attacker controlling the template string can achieve arbitrary code execution without any additional requirements.
 
