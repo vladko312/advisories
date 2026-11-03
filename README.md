@@ -1,10 +1,10 @@
 # Advisories for vulnerabilities
 ![Advisories](https://img.shields.io/badge/Advisories-4-blue)
-![Last modified](https://img.shields.io/badge/Last_modified-10.08.2026-blue)
+![Last modified](https://img.shields.io/badge/Last_modified-03.11.2026-blue)
 
 ---
 
-[![pybars3](https://img.shields.io/badge/Pybars3--RCE-9.8-red)](./pybars3.md) -
+[![CVE-2026-119716](https://img.shields.io/badge/CVE--2026--119716-9.8-red)](./CVE-2026-119716.md) -
 **Pybars3** at least up to the current version **0.9.7** and **Pybars4** at least up to the current version **0.9.13** are vulnerable to Code Injection.
 An attacker controlling the template string can achieve arbitrary code execution without any additional requirements.
 
