@@ -1,8 +1,12 @@
 # Advisories for vulnerabilities
-![Advisories](https://img.shields.io/badge/Advisories-4-blue)
-![Last modified](https://img.shields.io/badge/Last_modified-03.11.2026-blue)
+![Advisories](https://img.shields.io/badge/Advisories-5-blue)
+![Last modified](https://img.shields.io/badge/Last_modified-19.11.2026-blue)
 
 ---
+
+[![CVE-2026-130001](https://img.shields.io/badge/CVE--2026--130001-9.8-red)](./CVE-2026-130001.md) -
+Mustache for Ruby prior to version **1.1.3** allowed access to reflection/metaprogramming methods.
+An attacker controlling the template string can achieve arbitrary code execution without any additional requirements.
 
 [![CVE-2026-119716](https://img.shields.io/badge/CVE--2026--119716-9.8-red)](./CVE-2026-119716.md) -
 **Pybars3** at least up to the current version **0.9.7** and **Pybars4** at least up to the current version **0.9.13** are vulnerable to Code Injection.
